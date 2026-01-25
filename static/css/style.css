@@ -1,0 +1,277 @@
+/* =========================
+   YpeTec - CSS Principal
+   ========================= */
+
+/* Variaveis */
+:root {
+  /* Marca */
+  --brand-yellow: #ffd400;
+  --brand-yellow-600: #f2c200;
+  --brand-yellow-700: #e3b400;
+  --brand-black: #0a0a0a;
+  --brand-white: #ffffff;
+
+  /* Texto / superficies */
+  --ink-1: #0b0f19;
+  --ink-2: #1f2937;
+  --ink-3: #4b5563;
+  --bg-1: #ffffff;
+  --surface: #ffffff;
+  --ring: rgba(10, 10, 10, .10);
+
+  /* Realces */
+  --accent-1: var(--brand-yellow);
+  --accent-2: #111827;
+}
+
+/* Base */
+html, body {
+  height: 100%;
+  background: var(--bg-1);
+  color: var(--ink-2);
+}
+
+body {
+  background-image:
+    radial-gradient(900px 600px at 12% 10%, rgba(255, 212, 0, .10), transparent 60%),
+    radial-gradient(900px 600px at 90% -10%, rgba(0, 0, 0, .05), transparent 55%);
+  background-attachment: fixed;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--ink-1);
+}
+
+.text-ink-3 {
+  color: var(--ink-3);
+}
+
+.section-title {
+  color: var(--ink-1);
+}
+
+/* =========================
+   Navbar
+   ========================= */
+.navbar {
+  background: var(--brand-black) !important;
+  border-bottom: 3px solid var(--brand-yellow);
+}
+
+.navbar .navbar-brand,
+.navbar .nav-link {
+  color: #fff !important;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link.active {
+  color: var(--brand-yellow) !important;
+}
+
+.navbar .btn-login {
+  background: var(--brand-yellow);
+  color: #111 !important;
+  border: 0;
+  font-weight: 600;
+}
+
+.navbar .btn-login:hover {
+  filter: brightness(0.95);
+}
+
+/* =========================
+   Hero
+   ========================= */
+.hero {
+  position: relative;
+  border-bottom: 1px solid var(--ring);
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: .18em;
+  font-weight: 700;
+  font-size: .78rem;
+  color: #6b7280;
+}
+
+/* =========================
+   Botoes
+   ========================= */
+.btn-brand {
+  background: linear-gradient(90deg, var(--brand-yellow), var(--brand-yellow-600));
+  border: none;
+  color: #111;
+  font-weight: 700;
+}
+
+.btn-brand:hover {
+  background: linear-gradient(90deg, var(--brand-yellow-600), var(--brand-yellow-700));
+  color: #111;
+}
+
+.btn-ghost {
+  border: 2px solid var(--brand-black);
+  color: var(--brand-black);
+  background: transparent;
+  font-weight: 700;
+}
+
+.btn-ghost:hover {
+  background: var(--brand-black);
+  color: #fff;
+}
+
+/* =========================
+   Cards / Glass
+   ========================= */
+.glass {
+  background: var(--surface);
+  border: 1px solid var(--ring);
+  border-radius: 16px;
+}
+
+.card-elev {
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.card-elev:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, .10);
+}
+
+/* =========================
+   Badges
+   ========================= */
+.badge-soft {
+  background: #fff6cc;
+  border: 1px solid rgba(250, 204, 21, .6);
+  color: #7a5c00;
+  font-weight: 600;
+}
+
+.badge-status-open {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.badge-status-closed {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.badge-status-upcoming {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+/* =========================
+   Skeletons (loading)
+   ========================= */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  background: linear-gradient(100deg, rgba(17, 24, 39, .08) 40%, rgba(17, 24, 39, .14) 50%, rgba(17, 24, 39, .08) 60%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+@keyframes shimmer {
+  to {
+    background-position-x: -200%;
+  }
+}
+
+/* =========================
+   Imagens aprovados
+   ========================= */
+.approved-img {
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  border-bottom: 1px solid var(--ring);
+}
+
+/* =========================
+   Footer
+   ========================= */
+footer {
+  border-top: 1px solid var(--ring);
+  color: var(--ink-3);
+}
+
+/* =========================
+   Auth Pages (dark theme)
+   ========================= */
+.auth-page {
+  min-height: 100vh;
+  background: #0a0a0a;
+  background-image:
+    radial-gradient(900px 600px at 12% 10%, rgba(255, 212, 0, .12), transparent 60%),
+    radial-gradient(900px 600px at 90% -10%, rgba(255, 255, 255, .06), transparent 55%);
+  color: #e5e7eb;
+}
+
+.auth-page .navbar {
+  background: var(--brand-black);
+  border-bottom: 3px solid var(--brand-yellow);
+}
+
+.auth-card {
+  background: rgba(255, 255, 255, .06);
+  border: 1px solid rgba(255, 255, 255, .1);
+  border-radius: 16px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #fff;
+}
+
+.auth-card .form-label {
+  color: #e5e7eb;
+}
+
+.auth-card .form-control {
+  background: #111;
+  border: 1px solid rgba(255, 255, 255, .18);
+  color: #fff;
+}
+
+.auth-card .form-control:focus {
+  border-color: var(--brand-yellow);
+  box-shadow: 0 0 0 .2rem rgba(255, 212, 0, .15);
+}
+
+/* =========================
+   Formularios
+   ========================= */
+.form-control:focus {
+  border-color: var(--brand-yellow);
+  box-shadow: 0 0 0 0.2rem rgba(255, 212, 0, 0.25);
+}
+
+/* =========================
+   Alertas customizados
+   ========================= */
+.alert-brand {
+  background: #fff6cc;
+  border-color: var(--brand-yellow);
+  color: #7a5c00;
+}
+
+/* =========================
+   Tabelas
+   ========================= */
+.table-hover tbody tr:hover {
+  background-color: rgba(255, 212, 0, 0.05);
+}
+
+/* =========================
+   Utilitarios
+   ========================= */
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.min-vh-80 {
+  min-height: 80vh;
+}

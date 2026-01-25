@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Novo Edital{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'editais:lista' %}">Editais</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Novo Edital</li>
+                </ol>
+            </nav>
+
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="bi bi-plus-circle"></i> Criar Novo Edital
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label for="id_titulo" class="form-label">Titulo *</label>
+                            <input type="text" class="form-control {% if form.titulo.errors %}is-invalid{% endif %}"
+                                   id="id_titulo" name="titulo" value="{{ form.titulo.value|default:'' }}"
+                                   placeholder="Ex: Edital de Inovacao 2025" required>
+                            {% if form.titulo.errors %}
+                            <div class="invalid-feedback">{{ form.titulo.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_descricao" class="form-label">Descricao *</label>
+                            <textarea class="form-control {% if form.descricao.errors %}is-invalid{% endif %}"
+                                      id="id_descricao" name="descricao" rows="6"
+                                      placeholder="Descreva os requisitos, criterios e informacoes do edital...">{{ form.descricao.value|default:'' }}</textarea>
+                            {% if form.descricao.errors %}
+                            <div class="invalid-feedback">{{ form.descricao.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="id_inicio" class="form-label">Data de Inicio *</label>
+                                <input type="datetime-local" class="form-control {% if form.inicio.errors %}is-invalid{% endif %}"
+                                       id="id_inicio" name="inicio" value="{{ form.inicio.value|default:'' }}" required>
+                                {% if form.inicio.errors %}
+                                <div class="invalid-feedback">{{ form.inicio.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="id_fim" class="form-label">Data de Encerramento *</label>
+                                <input type="datetime-local" class="form-control {% if form.fim.errors %}is-invalid{% endif %}"
+                                       id="id_fim" name="fim" value="{{ form.fim.value|default:'' }}" required>
+                                {% if form.fim.errors %}
+                                <div class="invalid-feedback">{{ form.fim.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-brand">
+                                <i class="bi bi-check-lg"></i> Criar Edital
+                            </button>
+                            <a href="{% url 'editais:lista' %}" class="btn btn-outline-secondary">
+                                Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

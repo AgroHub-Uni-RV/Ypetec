@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Gerenciar Usuarios{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h2 class="section-title">
+                <i class="bi bi-people-fill"></i> Usuarios
+            </h2>
+            <p class="text-muted">Gerencie os usuarios do sistema.</p>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label">Filtrar por tipo</label>
+                    <select name="role" class="form-select">
+                        <option value="">Todos</option>
+                        <option value="ADMIN" {% if request.GET.role == 'ADMIN' %}selected{% endif %}>Administradores</option>
+                        <option value="ALUNO" {% if request.GET.role == 'ALUNO' %}selected{% endif %}>Alunos</option>
+                        <option value="MENTOR" {% if request.GET.role == 'MENTOR' %}selected{% endif %}>Mentores</option>
+                        <option value="INVESTIDOR" {% if request.GET.role == 'INVESTIDOR' %}selected{% endif %}>Investidores</option>
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-outline-primary">
+                        <i class="bi bi-filter"></i> Filtrar
+                    </button>
+                    {% if request.GET.role %}
+                    <a href="{% url 'contas:lista_usuarios' %}" class="btn btn-outline-secondary">Limpar</a>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if usuarios %}
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>CPF</th>
+                        <th>Email</th>
+                        <th>Tipo</th>
+                        <th>Status</th>
+                        <th>Cadastrado em</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in usuarios %}
+                    <tr>
+                        <td>
+                            <strong>{{ u.name }}</strong>
+                        </td>
+                        <td class="text-muted">{{ u.cpf|slice:":3" }}.{{ u.cpf|slice:"3:6" }}.{{ u.cpf|slice:"6:9" }}-{{ u.cpf|slice:"9:11" }}</td>
+                        <td>{{ u.email }}</td>
+                        <td>
+                            {% if u.role == 'ADMIN' %}
+                            <span class="badge bg-danger">Admin</span>
+                            {% elif u.role == 'ALUNO' %}
+                            <span class="badge bg-primary">Aluno</span>
+                            {% elif u.role == 'MENTOR' %}
+                            <span class="badge bg-info">Mentor</span>
+                            {% else %}
+                            <span class="badge bg-success">Investidor</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if u.status == 'ATIVO' %}
+                            <span class="badge bg-success">Ativo</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Inativo</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ u.created_at|date:"d/m/Y" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Paginacao -->
+    {% if page_obj.has_other_pages %}
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.role %}&role={{ request.GET.role }}{% endif %}">
+                    <i class="bi bi-chevron-left"></i>
+                </a>
+            </li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}{% if request.GET.role %}&role={{ request.GET.role }}{% endif %}">{{ num }}</a>
+                </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.role %}&role={{ request.GET.role }}{% endif %}">
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+
+    {% else %}
+    <div class="text-center py-5">
+        <i class="bi bi-people display-1 text-muted"></i>
+        <h4 class="mt-3 text-muted">Nenhum usuario encontrado</h4>
+        <p class="text-muted">
+            {% if request.GET.role %}
+            Nao ha usuarios com esse filtro.
+            {% else %}
+            Nenhum usuario cadastrado ainda.
+            {% endif %}
+        </p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

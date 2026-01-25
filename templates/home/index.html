@@ -1,0 +1,246 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<!-- HERO -->
+<header class="hero py-5 py-lg-6">
+    <div class="container py-4">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-7">
+                <div class="eyebrow mb-2">Plataforma de Inovação</div>
+                <h1 class="display-5 fw-bold">
+                    Acelere sua ideia com a <span style="color: var(--brand-yellow);">YpeTec</span>
+                </h1>
+                <p class="lead mt-3 mb-4 text-ink-3">
+                    Inscreva seu projeto nos editais, receba mentoria e faça parte do ecossistema de inovação.
+                    Transparência no processo, acompanhamento contínuo e vitrine de resultados.
+                </p>
+                <div class="d-flex gap-3">
+                    <a href="#editais" class="btn btn-brand btn-lg px-4">
+                        <i class="bi bi-megaphone"></i> Ver editais abertos
+                    </a>
+                    <a href="#aprovados" class="btn btn-ghost btn-lg px-4">
+                        <i class="bi bi-stars"></i> Conheça os aprovados
+                    </a>
+                </div>
+                <div class="d-flex gap-4 mt-4 text-ink-3 small">
+                    <div><i class="bi bi-shield-check me-1" style="color: var(--brand-yellow);"></i> Processos auditáveis</div>
+                    <div><i class="bi bi-people me-1" style="color: var(--brand-yellow);"></i> Mentores qualificados</div>
+                    <div><i class="bi bi-graph-up me-1" style="color: var(--brand-yellow);"></i> Acompanhamento de progresso</div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="glass p-4 p-lg-5 card-elev">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="badge badge-soft me-2"><i class="bi bi-lightning-charge"></i> Em destaque</span>
+                        <span class="small text-ink-3">Fluxo simplificado em 3 etapas</span>
+                    </div>
+                    <div class="vstack gap-3">
+                        <div class="d-flex gap-3">
+                            <div class="badge rounded-pill" style="background: var(--brand-black); color: #fff; font-weight: 700;">1</div>
+                            <div>
+                                <h6 class="mb-1">Submeta seu projeto</h6>
+                                <p class="mb-0 text-ink-3">Crie o projeto e envie para o edital ativo.</p>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-3">
+                            <div class="badge rounded-pill" style="background: var(--brand-black); color: #fff; font-weight: 700;">2</div>
+                            <div>
+                                <h6 class="mb-1">Seja avaliado</h6>
+                                <p class="mb-0 text-ink-3">Acompanhe o status: aprovado, ajustes ou reprovado.</p>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-3">
+                            <div class="badge rounded-pill" style="background: var(--brand-black); color: #fff; font-weight: 700;">3</div>
+                            <div>
+                                <h6 class="mb-1">Incube e cresça</h6>
+                                <p class="mb-0 text-ink-3">Mentorias, relatórios e divulgação dos resultados.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- STATS -->
+<section class="py-4">
+    <div class="container">
+        <div class="row g-3 text-center">
+            <div class="col-6 col-lg-3">
+                <div class="glass p-3">
+                    <div class="h3 mb-0">+120</div>
+                    <div class="text-ink-3 small">Projetos cadastrados</div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="glass p-3">
+                    <div class="h3 mb-0">+40</div>
+                    <div class="text-ink-3 small">Mentores ativos</div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="glass p-3">
+                    <div class="h3 mb-0">8</div>
+                    <div class="text-ink-3 small">Editais/ano</div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="glass p-3">
+                    <div class="h3 mb-0">100%</div>
+                    <div class="text-ink-3 small">Processo transparente</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- EDITAIS ABERTOS -->
+<section id="editais" class="py-5">
+    <div class="container">
+        <div class="d-flex align-items-end justify-content-between mb-3">
+            <div>
+                <h2 class="section-title mb-1">Editais abertos</h2>
+                <p class="text-ink-3 mb-0">Inscreva seu projeto nos editais vigentes.</p>
+            </div>
+            {% if user.is_authenticated and user.role == 'ADMIN' %}
+                <a href="{% url 'editais:criar' %}" class="btn btn-ghost">
+                    <i class="bi bi-megaphone"></i> Publicar edital
+                </a>
+            {% endif %}
+        </div>
+
+        <div class="row g-4">
+            {% if editais_abertos %}
+                {% for edital in editais_abertos %}
+                    <div class="col-md-6 col-lg-4">
+                        <a class="text-reset text-decoration-none d-block h-100" href="{% url 'editais:detalhe' edital.id %}">
+                            <div class="glass card-elev h-100">
+                                <div class="p-3">
+                                    <h5 class="mb-1">{{ edital.titulo }}</h5>
+                                    <span class="badge badge-status-open">Aberto</span>
+                                    <div class="small text-ink-3 mt-2">
+                                        <i class="bi bi-calendar-event"></i> Início: {{ edital.inicio|date:"d/m/Y" }}
+                                    </div>
+                                    <div class="small text-ink-3">
+                                        <i class="bi bi-hourglass-split"></i> Fim: {{ edital.fim|date:"d/m/Y" }}
+                                    </div>
+                                    <span class="small text-ink-3 d-block mt-2 text-end"><strong>Clique para detalhes</strong></span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12">
+                    <div class="glass p-4 text-center text-ink-3">
+                        Nenhum edital aberto no momento.
+                    </div>
+                </div>
+            {% endif %}
+
+            {% for edital in editais_futuros %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="glass h-100 opacity-75">
+                        <div class="p-3">
+                            <h5 class="mb-1">{{ edital.titulo }}</h5>
+                            <span class="badge badge-status-upcoming">Em breve</span>
+                            <div class="small text-ink-3 mt-2">
+                                <i class="bi bi-calendar-event"></i> Início: {{ edital.inicio|date:"d/m/Y" }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- PROJETOS APROVADOS -->
+<section id="aprovados" class="py-5">
+    <div class="container">
+        <div class="d-flex align-items-end justify-content-between mb-3">
+            <div>
+                <h2 class="section-title mb-1">Projetos aprovados</h2>
+                <p class="text-ink-3 mb-0">Conheça startups que já avançaram no processo.</p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            {% if publicacoes %}
+                {% for pub in publicacoes %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="glass card-elev h-100 rounded-4 overflow-hidden">
+                            <div class="ratio ratio-16x9">
+                                {% if pub.logo %}
+                                    <img src="{{ pub.logo.url }}" alt="Logo de {{ pub.projeto.titulo }}"
+                                         class="w-100 h-100" style="object-fit: cover;">
+                                {% else %}
+                                    <img src="{% static 'img/logo.png' %}" alt="Logo padrão"
+                                         class="w-100 h-100" style="object-fit: contain; padding: 1rem;">
+                                {% endif %}
+                            </div>
+                            <div class="p-3">
+                                <h5 class="mb-1">{{ pub.projeto.titulo }}</h5>
+                                <p class="text-ink-3 small mb-0">{{ pub.descricao|truncatewords:20 }}</p>
+                                {% if pub.destaque %}
+                                    <span class="badge badge-soft mt-2"><i class="bi bi-star-fill"></i> Destaque</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12">
+                    <div class="glass p-4 text-center text-ink-3">
+                        Nenhum projeto aprovado divulgado ainda.
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- SOBRE -->
+<section id="sobre" class="py-5">
+    <div class="container">
+        <div class="row g-4 align-items-center">
+            <div class="col-lg-6">
+                <h2 class="section-title">Por que a YpeTec?</h2>
+                <p class="text-ink-3">
+                    Apoio de ponta a ponta: submissão, avaliação, mentoria e acompanhamento com relatórios
+                    de progresso. Tudo em uma plataforma única, com governança e transparência.
+                </p>
+                <div class="row g-3 mt-1">
+                    <div class="col-sm-6">
+                        <div class="glass p-3 h-100"><i class="bi bi-magic"></i> Processo simples</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="glass p-3 h-100"><i class="bi bi-shield-lock"></i> Segurança e papéis</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="glass p-3 h-100"><i class="bi bi-people"></i> Comunidade e mentoria</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="glass p-3 h-100"><i class="bi bi-bar-chart"></i> Métricas e resultados</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="glass p-4 p-lg-5">
+                    <h5 class="mb-3"><i class="bi bi-check2-circle"></i> O que você faz aqui</h5>
+                    <ul class="mb-4 text-ink-3">
+                        <li>Cria e submete projetos para editais ativos;</li>
+                        <li>Acompanha a avaliação e a divulgação dos aprovados;</li>
+                        <li>Solicita mentoria e envia relatórios de progresso;</li>
+                        <li>Gerencia sua equipe e seu ciclo de incubação.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

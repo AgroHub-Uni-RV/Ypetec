@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Solicitar Mentoria{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'projetos:meus_projetos' %}">Meus Projetos</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Solicitar Mentoria</li>
+                </ol>
+            </nav>
+
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="bi bi-mortarboard"></i> Solicitar Mentoria
+                    </h4>
+                </div>
+                <div class="card-body">
+                    {% if projetos %}
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        A mentoria esta disponivel para projetos incubados.
+                        Selecione um projeto e descreva a area de mentoria desejada.
+                    </div>
+                    {% else %}
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        Voce nao possui projetos incubados. Apenas projetos com status "Incubado" podem solicitar mentoria.
+                    </div>
+                    {% endif %}
+
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label for="id_projeto" class="form-label">Projeto *</label>
+                            <select class="form-select" id="id_projeto" name="projeto" required>
+                                <option value="">Selecione um projeto...</option>
+                                {% for projeto in projetos %}
+                                <option value="{{ projeto.pk }}">{{ projeto.titulo }}</option>
+                                {% empty %}
+                                <option value="" disabled>Nenhum projeto incubado disponivel</option>
+                                {% endfor %}
+                            </select>
+                            <div class="form-text">Apenas projetos incubados podem solicitar mentoria.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_area" class="form-label">Area de Mentoria *</label>
+                            <input type="text" class="form-control"
+                                   id="id_area" name="area"
+                                   placeholder="Ex: Marketing Digital, Financeiro, Tecnologia" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_justificativa" class="form-label">Justificativa *</label>
+                            <textarea class="form-control"
+                                      id="id_justificativa" name="justificativa" rows="5"
+                                      placeholder="Explique por que precisa de mentoria nesta area e quais sao suas principais duvidas ou desafios..."></textarea>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-brand" {% if not projetos %}disabled{% endif %}>
+                                <i class="bi bi-send"></i> Enviar Solicitacao
+                            </button>
+                            <a href="{% url 'projetos:meus_projetos' %}" class="btn btn-outline-secondary">
+                                Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

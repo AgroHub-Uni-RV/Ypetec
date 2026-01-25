@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ edital.titulo }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'editais:lista' %}">Editais</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ edital.titulo|truncatewords:5 }}</li>
+                </ol>
+            </nav>
+
+            <!-- Header -->
+            <div class="mb-4">
+                {% if edital.esta_aberto %}
+                <span class="badge bg-success mb-2">
+                    <i class="bi bi-check-circle"></i> Aberto para submissoes
+                </span>
+                {% elif edital.esta_futuro %}
+                <span class="badge bg-warning text-dark mb-2">
+                    <i class="bi bi-clock"></i> Em breve
+                </span>
+                {% else %}
+                <span class="badge bg-secondary mb-2">
+                    <i class="bi bi-x-circle"></i> Encerrado
+                </span>
+                {% endif %}
+
+                <h1 class="h2">{{ edital.titulo }}</h1>
+
+                <div class="d-flex gap-3 text-muted small mt-3">
+                    <span>
+                        <i class="bi bi-calendar-event"></i>
+                        Inicio: {{ edital.inicio|date:"d/m/Y H:i" }}
+                    </span>
+                    <span>
+                        <i class="bi bi-calendar-check"></i>
+                        Fim: {{ edital.fim|date:"d/m/Y H:i" }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Conteudo -->
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">
+                        <i class="bi bi-file-text"></i> Descricao do Edital
+                    </h5>
+                    <div class="edital-content">
+                        {{ edital.descricao|linebreaks }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Acoes -->
+            {% if edital.esta_aberto %}
+            <div class="card mt-4 border-warning">
+                <div class="card-body text-center py-4">
+                    <h5 class="mb-3">Deseja submeter um projeto?</h5>
+                    {% if user.is_authenticated %}
+                        {% if user.role == 'ALUNO' %}
+                        <a href="{% url 'projetos:meus_projetos' %}" class="btn btn-brand">
+                            <i class="bi bi-send"></i> Ir para Meus Projetos
+                        </a>
+                        <p class="small text-muted mt-2">
+                            Acesse seus projetos para submeter a este edital.
+                        </p>
+                        {% else %}
+                        <p class="text-muted">
+                            Apenas alunos podem submeter projetos.
+                        </p>
+                        {% endif %}
+                    {% else %}
+                    <a href="{% url 'contas:login' %}" class="btn btn-brand">
+                        <i class="bi bi-box-arrow-in-right"></i> Entrar para Submeter
+                    </a>
+                    <p class="small text-muted mt-2">
+                        Faca login ou <a href="{% url 'contas:register' %}">crie uma conta</a> para submeter seu projeto.
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Voltar -->
+            <div class="mt-4">
+                <a href="{% url 'editais:lista' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Voltar para Editais
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

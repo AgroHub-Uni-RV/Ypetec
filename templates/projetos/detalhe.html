@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ projeto.titulo }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'projetos:meus_projetos' %}">Meus Projetos</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ projeto.titulo|truncatewords:5 }}</li>
+                </ol>
+            </nav>
+
+            <!-- Header -->
+            <div class="mb-4">
+                {% if projeto.status == 'PRE_SUBMISSAO' %}
+                <span class="badge bg-secondary mb-2">Pre-submissao</span>
+                {% elif projeto.status == 'SUBMETIDO' %}
+                <span class="badge bg-info mb-2">Submetido</span>
+                {% elif projeto.status == 'APROVADO' %}
+                <span class="badge bg-success mb-2">Aprovado</span>
+                {% elif projeto.status == 'REPROVADO' %}
+                <span class="badge bg-danger mb-2">Reprovado</span>
+                {% elif projeto.status == 'AJUSTES' %}
+                <span class="badge bg-warning text-dark mb-2">Ajustes Solicitados</span>
+                {% elif projeto.status == 'INCUBADO' %}
+                <span class="badge bg-primary mb-2">Incubado</span>
+                {% else %}
+                <span class="badge bg-dark mb-2">{{ projeto.get_status_display }}</span>
+                {% endif %}
+
+                <h1 class="h2">{{ projeto.titulo }}</h1>
+
+                <div class="d-flex gap-3 text-muted small mt-2">
+                    <span><i class="bi bi-tag"></i> {{ projeto.area }}</span>
+                    <span><i class="bi bi-calendar"></i> Criado em {{ projeto.created_at|date:"d/m/Y" }}</span>
+                </div>
+            </div>
+
+            <!-- Resumo -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">
+                        <i class="bi bi-file-text"></i> Resumo
+                    </h5>
+                    <div class="projeto-content">
+                        {{ projeto.resumo|linebreaks }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Equipe -->
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-people"></i> Equipe
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3 pb-3 border-bottom">
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-circle me-3">
+                                {{ projeto.responsavel.name|slice:":1"|upper }}
+                            </div>
+                            <div>
+                                <strong>{{ projeto.responsavel.name }}</strong>
+                                <span class="badge bg-warning text-dark ms-1">Responsavel</span>
+                                <br>
+                                <small class="text-muted">{{ projeto.responsavel.email }}</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% for membro in projeto.equipe.all %}
+                    <div class="mb-3 {% if not forloop.last %}pb-3 border-bottom{% endif %}">
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-circle me-3">
+                                {{ membro.nome|slice:":1"|upper }}
+                            </div>
+                            <div>
+                                <strong>{{ membro.nome }}</strong>
+                                <br>
+                                <small class="text-muted">{{ membro.funcao }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted mb-0">
+                        <i class="bi bi-info-circle"></i>
+                        Nenhum membro adicional na equipe.
+                    </p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Voltar -->
+            <div class="mt-4">
+                <a href="{% url 'projetos:meus_projetos' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Voltar
+                </a>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Acoes -->
+            {% if projeto.responsavel == user %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-gear"></i> Acoes</h6>
+                </div>
+                <div class="card-body">
+                    {% if projeto.status == 'PRE_SUBMISSAO' %}
+                    <a href="{% url 'projetos:submeter' projeto.pk %}" class="btn btn-brand w-100 mb-2">
+                        <i class="bi bi-send"></i> Submeter a Edital
+                    </a>
+                    {% endif %}
+
+                    {% if projeto.status == 'INCUBADO' %}
+                    <a href="{% url 'mentorias:solicitar' %}" class="btn btn-outline-primary w-100 mb-2">
+                        <i class="bi bi-mortarboard"></i> Solicitar Mentoria
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Submissoes -->
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-send-check"></i> Submissoes</h6>
+                </div>
+                <div class="card-body">
+                    {% for submissao in projeto.submissoes.all %}
+                    <div class="mb-3 {% if not forloop.last %}pb-3 border-bottom{% endif %}">
+                        <div class="fw-bold">{{ submissao.edital.titulo }}</div>
+                        <div class="small text-muted">
+                            Submetido em {{ submissao.submetido_em|date:"d/m/Y" }}
+                        </div>
+                        <span class="badge
+                            {% if submissao.status == 'ENVIADA' %}bg-secondary
+                            {% elif submissao.status == 'EM_AVALIACAO' %}bg-info
+                            {% elif submissao.status == 'APROVADA' %}bg-success
+                            {% elif submissao.status == 'REPROVADA' %}bg-danger
+                            {% else %}bg-warning text-dark{% endif %}">
+                            {{ submissao.get_status_display }}
+                        </span>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted mb-0">
+                        <i class="bi bi-inbox"></i>
+                        Nenhuma submissao registrada.
+                    </p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.avatar-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--brand-yellow);
+    color: var(--ink-1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+</style>
+{% endblock %}

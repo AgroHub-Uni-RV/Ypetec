@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login{% endblock %}
+
+{% block body_class %}auth-page{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="auth-card p-4 p-lg-5">
+                <div class="text-center mb-4">
+                    <img src="{% static 'img/logo.png' %}" alt="YpeTec" height="60" class="mb-3">
+                    <h4 class="mb-1">Bem-vindo de volta</h4>
+                    <p class="text-muted small">Entre com seu CPF e senha</p>
+                </div>
+
+                <form method="post" autocomplete="off">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="cpf" class="form-label">CPF</label>
+                        <input type="text" class="form-control" id="cpf" name="cpf"
+                               placeholder="000.000.000-00" data-mask="cpf" required autofocus>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Senha</label>
+                        <input type="password" class="form-control" id="password" name="password"
+                               placeholder="Sua senha" required>
+                    </div>
+
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn btn-brand btn-lg">
+                            <i class="bi bi-box-arrow-in-right"></i> Entrar
+                        </button>
+                    </div>
+
+                    <div class="text-center">
+                        <p class="small text-muted mb-2">
+                            Não tem conta?
+                            <a href="{% url 'contas:register' %}" class="text-warning">Criar conta</a>
+                        </p>
+                        <p class="small text-muted">
+                            <a href="#" class="text-muted">Esqueci minha senha</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

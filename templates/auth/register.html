@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Criar Conta{% endblock %}
+
+{% block body_class %}auth-page{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="auth-card p-4 p-lg-5">
+                <div class="text-center mb-4">
+                    <img src="{% static 'img/logo.png' %}" alt="YpeTec" height="60" class="mb-3">
+                    <h4 class="mb-1">Criar sua conta</h4>
+                    <p class="text-muted small">Preencha os dados para se cadastrar</p>
+                </div>
+
+                <form method="post" autocomplete="off">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Nome completo</label>
+                        <input type="text" class="form-control" id="name" name="name"
+                               placeholder="Seu nome completo" required autofocus>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="cpf" class="form-label">CPF</label>
+                        <input type="text" class="form-control" id="cpf" name="cpf"
+                               placeholder="000.000.000-00" data-mask="cpf" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">E-mail</label>
+                        <input type="email" class="form-control" id="email" name="email"
+                               placeholder="seu@email.com" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Senha</label>
+                        <input type="password" class="form-control" id="password" name="password"
+                               placeholder="Minimo 6 caracteres" required minlength="6">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password_confirm" class="form-label">Confirmar senha</label>
+                        <input type="password" class="form-control" id="password2" name="password2"
+                               placeholder="Repita sua senha" required>
+                    </div>
+
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn btn-brand btn-lg">
+                            <i class="bi bi-person-plus"></i> Criar Conta
+                        </button>
+                    </div>
+
+                    <div class="text-center">
+                        <p class="small text-muted mb-0">
+                            Ja tem uma conta?
+                            <a href="{% url 'contas:login' %}" class="text-warning">Entrar</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Mascara de CPF
+    const cpfInput = document.getElementById('cpf');
+    if (cpfInput) {
+        cpfInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 11) value = value.slice(0, 11);
+            if (value.length > 9) {
+                value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+            } else if (value.length > 6) {
+                value = value.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+            } else if (value.length > 3) {
+                value = value.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+            }
+            e.target.value = value;
+        });
+    }
+
+    // Validacao de senha
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        const password = document.getElementById('password').value;
+        const passwordConfirm = document.getElementById('password2').value;
+
+        if (password !== passwordConfirm) {
+            e.preventDefault();
+            alert('As senhas nao conferem!');
+        }
+    });
+});
+</script>
+{% endblock %}

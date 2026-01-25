@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Editais{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h2 class="section-title">
+                <i class="bi bi-megaphone"></i> Editais Abertos
+            </h2>
+            <p class="text-muted">Confira os editais disponíveis para submissão de projetos.</p>
+        </div>
+    </div>
+
+    {% if editais %}
+    <div class="row g-4">
+        {% for edital in editais %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card card-edital h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="badge bg-success">
+                            <i class="bi bi-clock"></i> Aberto
+                        </span>
+                    </div>
+                    <h5 class="card-title">{{ edital.titulo }}</h5>
+                    <p class="card-text text-muted small">
+                        {{ edital.descricao|truncatewords:30 }}
+                    </p>
+                    <div class="mt-3 small text-muted">
+                        <i class="bi bi-calendar-event"></i>
+                        {{ edital.inicio|date:"d/m/Y" }} - {{ edital.fim|date:"d/m/Y" }}
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0 pt-0">
+                    <a href="{% url 'editais:detalhe' edital.pk %}" class="btn btn-outline-warning btn-sm w-100">
+                        <i class="bi bi-eye"></i> Ver Detalhes
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Paginacao -->
+    {% if page_obj.has_other_pages %}
+    <nav class="mt-5">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                    <i class="bi bi-chevron-left"></i>
+                </a>
+            </li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active">
+                    <span class="page-link">{{ num }}</span>
+                </li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+
+    {% else %}
+    <div class="text-center py-5">
+        <i class="bi bi-inbox display-1 text-muted"></i>
+        <h4 class="mt-3 text-muted">Nenhum edital aberto no momento</h4>
+        <p class="text-muted">Volte em breve para conferir novos editais.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

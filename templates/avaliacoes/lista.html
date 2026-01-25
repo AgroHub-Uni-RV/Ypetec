@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Avaliar Submissoes{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h2 class="section-title">
+                <i class="bi bi-clipboard-check"></i> Submissoes para Avaliacao
+            </h2>
+            <p class="text-muted">Avalie as submissoes de projetos nos editais.</p>
+        </div>
+    </div>
+
+    {% if submissoes %}
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Projeto</th>
+                        <th>Edital</th>
+                        <th>Responsavel</th>
+                        <th>Submetido em</th>
+                        <th>Status</th>
+                        <th>Acoes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sub in submissoes %}
+                    <tr>
+                        <td>
+                            <strong>{{ sub.projeto.titulo|truncatewords:5 }}</strong>
+                        </td>
+                        <td>{{ sub.edital.titulo|truncatewords:4 }}</td>
+                        <td>{{ sub.projeto.responsavel.name }}</td>
+                        <td>{{ sub.submetido_em|date:"d/m/Y H:i" }}</td>
+                        <td>
+                            {% if sub.status == 'ENVIADA' %}
+                            <span class="badge bg-warning text-dark">Pendente</span>
+                            {% elif sub.status == 'EM_AVALIACAO' %}
+                            <span class="badge bg-info">Em Avaliacao</span>
+                            {% elif sub.status == 'APROVADA' %}
+                            <span class="badge bg-success">Aprovada</span>
+                            {% elif sub.status == 'REPROVADA' %}
+                            <span class="badge bg-danger">Reprovada</span>
+                            {% else %}
+                            <span class="badge bg-secondary">{{ sub.get_status_display }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modal{{ sub.pk }}">
+                                <i class="bi bi-eye"></i> Avaliar
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Paginacao -->
+    {% if page_obj.has_other_pages %}
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                    <i class="bi bi-chevron-left"></i>
+                </a>
+            </li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+
+    <!-- Modais -->
+    {% for sub in submissoes %}
+    <div class="modal fade" id="modal{{ sub.pk }}" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Avaliar Submissao</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Projeto</h6>
+                    <p class="fw-bold">{{ sub.projeto.titulo }}</p>
+
+                    <h6>Edital</h6>
+                    <p>{{ sub.edital.titulo }}</p>
+
+                    <h6>Responsavel</h6>
+                    <p>{{ sub.projeto.responsavel.name }} ({{ sub.projeto.responsavel.email }})</p>
+
+                    <h6>Area</h6>
+                    <p>{{ sub.projeto.area }}</p>
+
+                    <h6>Resumo do Projeto</h6>
+                    <div class="bg-light p-3 rounded">
+                        {{ sub.projeto.resumo|linebreaks }}
+                    </div>
+
+                    {% if sub.status == 'ENVIADA' or sub.status == 'EM_AVALIACAO' %}
+                    <hr>
+                    <h6>Resultado da Avaliacao</h6>
+                    <form method="post" action="{% url 'avaliacoes:avaliar' sub.pk %}" id="form-avaliar-{{ sub.pk }}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Resultado *</label>
+                            <select class="form-select" name="resultado" required>
+                                <option value="">Selecione...</option>
+                                <option value="APROVADO">Aprovado</option>
+                                <option value="REPROVADO">Reprovado</option>
+                                <option value="NECESSITA_AJUSTES">Necessita Ajustes</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Comentarios</label>
+                            <textarea class="form-control" name="comentarios" rows="4"
+                                      placeholder="Feedback para o aluno..."></textarea>
+                        </div>
+                    </form>
+                    {% endif %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    {% if sub.status == 'ENVIADA' or sub.status == 'EM_AVALIACAO' %}
+                    <button type="submit" form="form-avaliar-{{ sub.pk }}" class="btn btn-primary">
+                        <i class="bi bi-check-lg"></i> Salvar Avaliacao
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    {% else %}
+    <div class="text-center py-5">
+        <i class="bi bi-inbox display-1 text-muted"></i>
+        <h4 class="mt-3 text-muted">Nenhuma submissao pendente</h4>
+        <p class="text-muted">As submissoes apareceram aqui quando projetos forem submetidos a editais.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

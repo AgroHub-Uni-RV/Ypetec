@@ -1,0 +1,25 @@
+# Django 5.x
+Django>=5.0,<6.0
+
+# Django REST Framework
+djangorestframework>=3.14,<4.0
+djangorestframework-simplejwt>=5.3,<6.0
+
+# Database
+psycopg[binary]>=3.1,<4.0
+dj-database-url>=2.1,<3.0
+
+# Processamento de imagens
+Pillow>=10.0,<13.0
+
+# CORS
+django-cors-headers>=4.3,<5.0
+
+# Ambiente
+python-dotenv>=1.0,<2.0
+
+# Desenvolvimento
+ipython>=8.0
+
+# Produção (opcional)
+gunicorn>=21.0,<23.0

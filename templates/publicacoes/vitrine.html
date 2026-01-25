@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Vitrine de Projetos{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col text-center">
+            <h2 class="section-title">
+                <i class="bi bi-stars"></i> Projetos Aprovados
+            </h2>
+            <p class="text-muted">Conheca os projetos que passaram pelo processo de incubacao.</p>
+        </div>
+    </div>
+
+    {% if publicacoes %}
+    <div class="row g-4">
+        {% for pub in publicacoes %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card card-projeto h-100">
+                {% if pub.logo %}
+                <img src="{{ pub.logo.url }}" class="card-img-top" alt="{{ pub.projeto.titulo }}"
+                     style="height: 180px; object-fit: cover;">
+                {% else %}
+                <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center"
+                     style="height: 180px;">
+                    <i class="bi bi-image display-3 text-muted"></i>
+                </div>
+                {% endif %}
+
+                <div class="card-body">
+                    {% if pub.destaque %}
+                    <span class="badge bg-warning text-dark mb-2">
+                        <i class="bi bi-star-fill"></i> Destaque
+                    </span>
+                    {% endif %}
+
+                    <h5 class="card-title">{{ pub.projeto.titulo }}</h5>
+                    <p class="card-text text-muted small">
+                        {{ pub.descricao|truncatewords:25 }}
+                    </p>
+
+                    <div class="small text-muted">
+                        <i class="bi bi-tag"></i> {{ pub.projeto.area }}
+                    </div>
+                </div>
+
+                <div class="card-footer bg-transparent border-0 pt-0">
+                    <div class="d-flex gap-2">
+                        <span class="text-muted small">
+                            <i class="bi bi-person"></i> {{ pub.projeto.responsavel.name }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Paginacao -->
+    {% if page_obj.has_other_pages %}
+    <nav class="mt-5">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                    <i class="bi bi-chevron-left"></i>
+                </a>
+            </li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+
+    {% else %}
+    <div class="text-center py-5">
+        <i class="bi bi-inbox display-1 text-muted"></i>
+        <h4 class="mt-3 text-muted">Nenhum projeto publicado ainda</h4>
+        <p class="text-muted">Os projetos aprovados apareceram aqui em breve.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
