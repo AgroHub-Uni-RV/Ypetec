@@ -136,3 +136,7 @@ Thumbs.db
 uploads/
 staticfiles/
 *.bak
+
+# Claude Code
+CLAUDE.md
+claude-docs/
