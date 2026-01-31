@@ -21,5 +21,6 @@ python-dotenv>=1.0,<2.0
 # Desenvolvimento
 ipython>=8.0
 
-# Produção (opcional)
+# Produção
 gunicorn>=21.0,<23.0
+whitenoise>=6.6,<7.0
