@@ -48,3 +48,12 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
+else:
+    # Em produção no Railway (filesystem efêmero), servir uploads via Django.
+    # WhiteNoise já cuida dos arquivos estáticos coletados em STATIC_ROOT.
+    # NOTA: Para produção permanente, migrar para S3 ou Cloudinary.
+    from django.urls import re_path
+    from django.views.static import serve
+    urlpatterns += [
+        re_path(r'^uploads/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+    ]
