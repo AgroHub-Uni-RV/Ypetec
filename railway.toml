@@ -1,9 +1,8 @@
 [build]
 builder = "nixpacks"
-buildCommand = "chmod +x build.sh && ./build.sh"
 
 [deploy]
-startCommand = "gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120 --access-logfile - --error-logfile -"
+startCommand = "chmod +x start.sh && ./start.sh"
 healthcheckPath = "/admin/login/"
 healthcheckTimeout = 300
 restartPolicyType = "on_failure"
