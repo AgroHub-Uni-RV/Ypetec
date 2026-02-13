@@ -176,6 +176,22 @@ Para rodar em produção:
 gunicorn config.wsgi:application --bind 0.0.0.0:8000
 ```
 
+
+## Deploy na Railway (segredos em runtime)
+
+Para evitar alertas de segurança e garantir que os segredos não sejam usados em build-time:
+
+1. Em **Railway → Service → Variables**, cadastre como variáveis de **runtime**:
+   - `SECRET_KEY`
+   - `JWT_SECRET_KEY`
+   - `RESEND_API_KEY`
+   - (e demais segredos, como `DATABASE_URL`)
+2. Não use segredos em **build args**.
+3. Não use `ARG`/`ENV` de build para segredos em Dockerfile/Nixpacks customizado.
+4. Faça redeploy do serviço após atualizar as variáveis.
+
+Nesta base, o deploy foi ajustado para executar `collectstatic` e `migrate` no **start/runtime** (`start.sh`), evitando dependência de segredos no build.
+
 ## Licença
 
 Este projeto é proprietário e de uso restrito.
